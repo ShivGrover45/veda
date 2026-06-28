@@ -5,11 +5,11 @@ from ingestor import load_and_split
 from retriever import ingest_documents, retrieve
 from generator import generate_answer
 from embedder import get_embedder
-
+from langchain.messages import HumanMessage,AIMessage
 app=FastAPI(title="Veda AI",version="1.0.0")
 
 embedder=get_embedder()
-
+chat_history={}
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -35,8 +35,15 @@ async def upload_file(file: UploadFile = File(...)):
 @app.post("/query")
 async def student_query(payload: dict):
     query = payload.get("query")
+    session_id=payload.get("session_id","default")
     if not query:
         return {"error": "Query not provided."}
+    if session_id not in chat_history:
+        chat_history[session_id] = []
+    
+    history = chat_history[session_id]
     results = retrieve(query, embedder)
     answer=generate_answer(query, results)
+    history.append(HumanMessage(content=query))
+    history.append(AIMessage(content=answer))
     return {"answer":answer}
