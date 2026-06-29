@@ -1,6 +1,6 @@
 # RAG Study Assistant
 
-An AI-powered study assistant that lets you upload PDF documents and ask questions about them. Built with LangChain, Gemini 2.5 Flash, and ChromaDB.
+An AI-powered study assistant that lets you upload PDF documents and ask questions about them. Built with LangChain, Gemini 3.5 Flash, and ChromaDB.
 
 ## Tech Stack
 
