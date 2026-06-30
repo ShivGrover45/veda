@@ -13,7 +13,7 @@ An AI-powered study assistant that lets you upload PDF documents and ask questio
 ## Architecture
 
 PDF Upload → Text Extraction → Chunking → Embedding → ChromaDB
-Query → Embedding → Similarity Search → Gemini 2.5 Flash → Answer
+Query → Embedding → Similarity Search → Gemini 3.5 Flash → Answer
 
 ## Setup
 
