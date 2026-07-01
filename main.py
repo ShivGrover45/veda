@@ -10,7 +10,7 @@ from models import QueryRequest
 app=FastAPI(title="Veda AI",version="1.0.0")
 
 embedder=get_embedder()
-chat_history={}
+chat_histories={}
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -48,7 +48,7 @@ async def upload_file(file: UploadFile = File(...)):
     
 
 @app.post("/query")
-async def student_query(payload: QueryRequest):
+async def query(payload: QueryRequest):
     try:
         if payload.session_id not in chat_histories:
             chat_histories[payload.session_id] = []
@@ -69,3 +69,9 @@ async def student_query(payload: QueryRequest):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing query: {str(e)}")
+    
+@app.post('/clear/{session_id}')
+async def clear_session(session_id: str):
+    if session_id in chat_histories:
+        chat_histories.pop(session_id)
+        return {"message": f"Session '{session_id}' cleared successfully."}
