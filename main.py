@@ -5,7 +5,7 @@ from ingestor import load_and_split
 from retriever import ingest_documents, retrieve
 from generator import generate_answer
 from embedder import get_embedder
-from langchain.messages import HumanMessage,AIMessage
+from langchain_core.messages import HumanMessage, AIMessage
 from models import QueryRequest
 app=FastAPI(title="Veda AI",version="1.0.0")
 
@@ -23,7 +23,7 @@ def health_check():
     return {"status": "healthy"}
 
 @app.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(file: UploadFile = File(...),session_id: str = "default"):
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
     contents=await file.read()
@@ -34,7 +34,7 @@ async def upload_file(file: UploadFile = File(...)):
         chunks=load_and_split(temp_path)
         if len(chunks) == 0:
             raise HTTPException(status_code=400, detail="Could not extract text from PDF. Make sure it is not a scanned document.")
-        ingest_documents(chunks,embedder)
+        ingest_documents(chunks,embedder,session_id=session_id)
         return {"message": f"File '{file.filename}' uploaded and processed successfully."}
     except HTTPException:
         raise
@@ -54,7 +54,7 @@ async def query(payload: QueryRequest):
             chat_histories[payload.session_id] = []
         
         history = chat_histories[payload.session_id]
-        results = retrieve(payload.query, embedder)
+        results = retrieve(payload.query, embedder, session_id=payload.session_id)
         
         if not results:
             raise HTTPException(status_code=404, detail="No relevant content found for your query.")
