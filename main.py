@@ -75,3 +75,12 @@ async def clear_session(session_id: str):
     if session_id in chat_histories:
         chat_histories.pop(session_id)
         return {"message": f"Session '{session_id}' cleared successfully."}
+@app.post('/restore')
+async def restore_vector_db():
+    try :
+        from langchain_chroma import Chroma
+        vector_store=Chroma(persist_directory="chroma_db", embedding_function=embedder)
+        vector_store.delete_collection()
+        return {"message":"Vector database restored successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error restoring vector database: {str(e)}")
