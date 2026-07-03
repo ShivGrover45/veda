@@ -19,8 +19,8 @@ Query → Embedding → Similarity Search → Gemini 3.5 Flash → Answer
 
 1. Clone the repo
 ```bash
-   git clone https://github.com/ShivGrover45/rag-study-assistant.git
-   cd rag-study-assistant
+   git clone https://github.com/ShivGrover45/veda.git
+   cd veda
 ```
 
 2. Install dependencies
@@ -38,8 +38,6 @@ Query → Embedding → Similarity Search → Gemini 3.5 Flash → Answer
 ```
 
 5. Open `http://localhost:8000/docs` to test the API
-
-## Endpoints
 
 ## Endpoints
 
