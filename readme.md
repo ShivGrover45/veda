@@ -45,4 +45,4 @@ Query → Embedding → Similarity Search → Gemini 3.5 Flash → Answer
 - `POST /upload` — Upload a PDF for ingestion (PDF only, text-based)
 - `POST /query` — Ask a question about uploaded PDFs (supports conversation history via session_id)
 - `POST /clear/{session_id}` — Clear conversation history for a session
-- `DELETE /reset-vectorstore` — Reset the vector store (clear all ingested PDFs)
+- `DELETE /reset` — Reset the vector store (clear all ingested PDFs)
