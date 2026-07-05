@@ -1,4 +1,5 @@
 import os
+import uuid
 from fastapi import FastAPI,UploadFile,File,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from ingestor import load_and_split
@@ -17,6 +18,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+uuid=uuid.uuid4()
 
 @app.get("/health")
 def health_check():
@@ -27,7 +29,7 @@ async def upload_file(file: UploadFile = File(...),session_id: str = "default"):
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
     contents=await file.read()
-    temp_path=f"tem_{file.filename}"
+    temp_path=f"tem_{file.filename}_{session_id}_{uuid}"
     try:
         with open(temp_path,"wb") as f:
             f.write(contents)
