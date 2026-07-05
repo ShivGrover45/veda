@@ -19,5 +19,5 @@ def ingest_documents(chunks,embedder,session_id:str="default"):
     return vector_store
 def retrieve(query:str,embedder,k:int=4,session_id:str="default"):
     vector_store = get_vector_store(embedder, session_id)
-    results = vector_store.similarity_search(query,k=k)
+    results= vector_store.similarity_search_with_relevance_scores(query, k=k)
     return results
