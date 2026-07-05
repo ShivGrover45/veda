@@ -19,8 +19,8 @@ Query → Embedding → Similarity Search → Gemini 3.5 Flash → Answer
 
 1. Clone the repo
 ```bash
-   git clone https://github.com/ShivGrover45/rag-study-assistant.git
-   cd rag-study-assistant
+   git clone https://github.com/ShivGrover45/veda.git
+   cd veda
 ```
 
 2. Install dependencies
@@ -41,10 +41,8 @@ Query → Embedding → Similarity Search → Gemini 3.5 Flash → Answer
 
 ## Endpoints
 
-## Endpoints
-
 - `GET /health` — Health check
 - `POST /upload` — Upload a PDF for ingestion (PDF only, text-based)
 - `POST /query` — Ask a question about uploaded PDFs (supports conversation history via session_id)
 - `POST /clear/{session_id}` — Clear conversation history for a session
-- `DELETE /reset-vectorstore` — Reset the vector store (clear all ingested PDFs)
+- `DELETE /reset` — Reset the vector store (clear all ingested PDFs)
