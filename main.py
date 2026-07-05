@@ -75,6 +75,8 @@ async def clear_session(session_id: str):
     if session_id in chat_histories:
         chat_histories.pop(session_id)
         return {"message": f"Session '{session_id}' cleared successfully."}
+    else:
+        raise HTTPException(status_code=404, detail=f"Session '{session_id}' not found.")
 @app.post('/restore')
 async def restore_vector_db():
     try :
