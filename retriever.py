@@ -5,6 +5,7 @@ from langchain_core.prompts import ChatPromptTemplate,MessagesPlaceholder
 collection_name = "veda"
 
 CHROMA_PATH="./chroma_db"
+RESPONSE_THRESHOLD=0.6
 def get_vector_store(embedder,session_id:str="default"):
     
     vector_store = Chroma(
@@ -20,7 +21,7 @@ def ingest_documents(chunks,embedder,session_id:str="default"):
     return vector_store
 
 
-def generate_query_variants(query:str,n:int=3):
+def generate_query_variants(query:str,n:int=3)->list[str]:
     model=ChatGoogleGenerativeAI(model="gemini-3.5-flash")
     prompt=ChatPromptTemplate.from_messages([
         ("system",f"Generate {n} different rephrasings of the user's question "
@@ -29,9 +30,27 @@ def generate_query_variants(query:str,n:int=3):
     ])
     chain = prompt | model
     response = chain.invoke({"query": query})
-    return response.split("\n")[:-1]  # Remove the last empty line
+    variants=[line.strip() for line in response.contents.split("\n") if line.strip()]
+    return variants[:n]
 
 def retrieve(query:str,embedder,k:int=4,session_id:str="default"):
     vector_store = get_vector_store(embedder, session_id)
     results= vector_store.similarity_search_with_relevance_scores(query, k=k)
-    return results
+    if not results:
+        return []
+    top_score=results[0][1]
+    if top_score>RESPONSE_THRESHOLD:
+        return [doc for doc,score in results ]
+    variants=generate_query_variants(query)
+    seen=set()
+    merged=[]
+    for doc,score in results:
+        if score>=RESPONSE_THRESHOLD:
+            seen.add(doc.page_content)
+            merged.append(doc)
+    for variant in variants:
+        for doc in vector_store.similarity_search(variant, k=k):
+            if doc.page_content not in seen:
+                seen.add(doc.page_content)
+                merged.append(doc)
+    return merged
