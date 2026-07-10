@@ -8,6 +8,7 @@ from generator import generate_answer
 from embedder import get_embedder
 from langchain_core.messages import HumanMessage, AIMessage
 from models import QueryRequest
+from weak_topics import *
 app=FastAPI(title="Veda AI",version="1.0.0")
 
 embedder=get_embedder()
@@ -62,6 +63,8 @@ async def query(payload: QueryRequest):
             raise HTTPException(status_code=404, detail="No relevant content found for your query.")
         
         answer = generate_answer(payload.query, results, history)
+        context_snippet="\n".join([doc.page_content for doc in results[:1]])
+        topic=record_query(payload.session_id,context_snippet,payload.query)
         
         history.append(HumanMessage(content=payload.query))
         history.append(AIMessage(content=answer))
