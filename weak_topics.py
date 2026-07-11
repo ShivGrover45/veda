@@ -5,7 +5,7 @@ from langchain_core.prompts import ChatPromptTemplate
 WEAK_THRESHOLD=2
 topic_tracker:dict[str,dict[str,int]]=defaultdict(lambda: defaultdict(int))
 def extract_topic(query:str,context_snippet:str)->str:
-    model=ChatGoogleGenerativeAI(model="gemini-3.5-flash")
+    model=ChatGoogleGenerativeAI(model="gemini-2.5-flash")
     prompt=ChatPromptTemplate.from_messages([
         ("system", "Identify the single core academic topic/concept being asked about, "
                    "in 2-4 words. Return only the topic, nothing else."),
