@@ -15,6 +15,16 @@ An AI-powered study assistant that lets you upload PDF documents and ask questio
 PDF Upload → Text Extraction → Chunking → Embedding → ChromaDB
 Query → Embedding → Similarity Search → Gemini 3.5 Flash → Answer
 
+## Known Limitations
+
+- **Weak-topic tracking uses exact-match topic labels.** Each query's topic is extracted 
+  via a separate LLM call and tracked per-session using string matching. Semantically 
+  related questions phrased differently (e.g. "PI controller terms" vs "PID control terms") 
+  may be tracked as distinct topics rather than clustering under one label, which can 
+  under-count how often a student is actually struggling with a given concept. A more 
+  robust approach would embed topic labels and cluster by similarity rather than exact 
+  string match — noted as a potential future improvement.
+
 ## Setup
 
 1. Clone the repo
