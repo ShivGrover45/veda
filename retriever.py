@@ -30,7 +30,13 @@ def generate_query_variants(query:str,n:int=3)->list[str]:
     ])
     chain = prompt | model
     response = chain.invoke({"query": query})
-    variants=[line.strip() for line in response.contents.split("\n") if line.strip()]
+    content = response.content  # grab the box (or letter) as-is
+    if isinstance(content, list):  # check: is it a box?
+        content = " ".join(
+            block["text"] if isinstance(block, dict) and "text" in block else str(block)
+            for block in content
+        )
+    variants=[line.strip() for line in content.split("\n") if line.strip()]
     return variants[:n]
 
 def retrieve(query:str,embedder,k:int=4,session_id:str="default"):

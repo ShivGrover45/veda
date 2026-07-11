@@ -13,7 +13,10 @@ def extract_topic(query:str,context_snippet:str)->str:
     ])
     chain = prompt | model
     response = chain.invoke({"query": query, "context": context_snippet[:500]})
-    return response.contents.strip()
+    content= response.content
+    if isinstance(content, list):
+        content=content = " ".join(str(part) for part in content)
+    return content.strip().lower()
 def record_query(session_id:str,context_snippet:str,query:str)->str:
     topic=extract_topic(query, context_snippet)
     topic_tracker[session_id][topic] += 1
