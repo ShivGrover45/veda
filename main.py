@@ -97,3 +97,7 @@ async def restore_vector_db():
         return {"message":"Vector database restored successfully."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error restoring vector database: {str(e)}")
+@app.get('/debug-topics/{session_id}')
+async def debug_topics(session_id: str):
+    from weak_topics import topic_tracker
+    return dict(topic_tracker[session_id])

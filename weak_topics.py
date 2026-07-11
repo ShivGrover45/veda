@@ -15,7 +15,10 @@ def extract_topic(query:str,context_snippet:str)->str:
     response = chain.invoke({"query": query, "context": context_snippet[:500]})
     content= response.content
     if isinstance(content, list):
-        content=content = " ".join(str(part) for part in content)
+        content = " ".join(
+            block["text"] if isinstance(block, dict) and "text" in block else str(block)
+            for block in content
+        )
     return content.strip().lower()
 def record_query(session_id:str,context_snippet:str,query:str)->str:
     topic=extract_topic(query, context_snippet)
