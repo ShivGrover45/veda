@@ -25,5 +25,11 @@ Context:
         "chat_history": chat_history,
         "query": query
     })
-    return response.content
+    content=response.content
+    if isinstance(content, list):
+        content = " ".join(
+            block["text"] if isinstance(block, dict) and "text" in block else str(block)
+            for block in content
+        )
+    return content
  
