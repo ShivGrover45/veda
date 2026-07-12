@@ -25,6 +25,13 @@ Query → Embedding → Similarity Search → Gemini 3.5 Flash → Answer
   robust approach would embed topic labels and cluster by similarity rather than exact 
   string match — noted as a potential future improvement.
 
+  - **Chat history is not persisted across page reloads.** Messages are held in frontend 
+  React state only; reloading the browser tab clears the visible conversation, even 
+  though the backend's chat history for that session (in-memory, per `session_id`) 
+  may still exist until the server restarts. A production version would fetch 
+  existing history on page load via a dedicated endpoint, and likely persist sessions 
+  in Redis or a database rather than in-memory dicts. Noted as a planned improvement.
+
 ## Setup
 
 1. Clone the repo
