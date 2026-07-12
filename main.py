@@ -9,6 +9,14 @@ from embedder import get_embedder
 from langchain_core.messages import HumanMessage, AIMessage
 from models import QueryRequest
 from weak_topics import *
+from quiz_config import DppConfig, get_config, update_config
+from fastapi.responses import Response
+from quiz import generate_mcqs
+from pdf import generate_pdf
+
+
+
+
 app=FastAPI(title="Veda AI",version="1.0.0")
 
 embedder=get_embedder()
@@ -101,3 +109,33 @@ async def restore_vector_db():
 async def debug_topics(session_id: str):
     from weak_topics import topic_tracker
     return dict(topic_tracker[session_id])
+
+@app.get('/internal/dpp-config')
+async def get_dpp_config():
+    return get_config()
+
+@app.post('/internal/dpp-config')
+async def update_dpp_config(new_config: DppConfig):
+    updated_config = update_config(new_config)
+    return updated_config
+
+@app.get('/quiz/{session_id}/pdf')
+async def generate_pdf_endpoint(session_id: str, topic: str = None):
+    if not topic:
+        weak = get_weak_topics(session_id)
+        if not weak:
+            raise HTTPException(status_code=400, detail="No weak topics found for the session. Please provide a topic.")
+        topic = weak[0]["topic"]
+
+    context_snippet = retrieve(topic, embedder, session_id=session_id)
+    if not context_snippet:
+        raise HTTPException(status_code=404, detail=f"No relevant content found for the topic '{topic}'.")
+
+    quiz = generate_mcqs(topic, context_snippet)
+    pdf = generate_pdf(quiz)
+
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={topic}_quiz.pdf"}
+    )

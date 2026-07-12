@@ -18,7 +18,7 @@ Context:
         MessagesPlaceholder(variable_name="chat_history"),
         ("human", "{query}")
     ])
-    model=ChatGoogleGenerativeAI(model="gemini-2.5-flash") 
+    model=ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite") 
     chain = prompt | model
     response = chain.invoke({
         "context": context,

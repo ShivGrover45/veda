@@ -22,7 +22,7 @@ def ingest_documents(chunks,embedder,session_id:str="default"):
 
 
 def generate_query_variants(query:str,n:int=3)->list[str]:
-    model=ChatGoogleGenerativeAI(model="gemini-2.5-flash")
+    model=ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite")
     prompt=ChatPromptTemplate.from_messages([
         ("system",f"Generate {n} different rephrasings of the user's question "
                    "to help retrieve relevant study material. Return one per line, "
