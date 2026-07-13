@@ -5,7 +5,7 @@ class DppConfig(BaseModel):
     Configuration for DPP (Data Processing Pipeline).
     """
     difficulty: str="medium"
-    style: str="multiple_choice"
+    style_notes: str="multiple_choice"
     n_questions: int=10
 
     #Handle pdf layout

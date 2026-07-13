@@ -30,3 +30,9 @@ def get_weak_topics(session_id:str)->list[dict]:
 def clear_topics(session_id:str):
     if session_id in topic_tracker:
         del topic_tracker[session_id]
+
+def find_similar_topic(session_id:str, topic:str,embedder,threshold:float=0.85)->str:
+    existing=list[topic_tracker[session_id].keys()]
+    if not existing:
+        return topic
+    
