@@ -1,6 +1,7 @@
 from collections import defaultdict
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
+from sentence_transformers.util import cos_sim
 
 WEAK_THRESHOLD=2
 topic_tracker:dict[str,dict[str,int]]=defaultdict(lambda: defaultdict(int))
@@ -31,8 +32,4 @@ def clear_topics(session_id:str):
     if session_id in topic_tracker:
         del topic_tracker[session_id]
 
-def find_similar_topic(session_id:str, topic:str,embedder,threshold:float=0.85)->str:
-    existing=list[topic_tracker[session_id].keys()]
-    if not existing:
-        return topic
-    
+
